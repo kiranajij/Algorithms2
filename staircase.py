@@ -14,7 +14,9 @@ def staircase(height: int, step_size: list):
     # return ways
 
 
-def implementation_2(height: int, step_sizes: list) -> int:
+def implementation_2(height: int,
+                     step_sizes: list,
+                     cache: dict = None) -> int:
     """
     :raises: No exception.
     :rtype: integer denoting number of ways.
@@ -32,6 +34,8 @@ def implementation_2(height: int, step_sizes: list) -> int:
 
 
     """
+    if cache is None:
+        cache = {}
     ways = 0
     if height == 0:
         return 1
@@ -40,11 +44,15 @@ def implementation_2(height: int, step_sizes: list) -> int:
     else:
         for size in step_sizes:
             if height >= size:
-                ways += implementation_2(height-size, step_sizes)
+                if not height - size in cache:
+                    cache[height - size] = implementation_2(height - size,
+                                                            step_sizes,
+                                                            cache)
+                ways += cache[height - size]
         return ways
 
 
 if __name__ == '__main__':
-    param = [4, [1, 2]]
+    param = [10, [1, 2]]
     # print(staircase(*param))
     print(implementation_2(*param))
