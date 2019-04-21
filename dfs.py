@@ -87,6 +87,45 @@ class DfsCycle(Dfs):
         pass
 
 
+class DfsArticulation(Dfs):
+    TREE_EDGE = 0
+    BACK_EDGE = 1
+    PARENT_EDGE = 2
+
+    def __init__(self, *args, **kwargs):
+        super(DfsArticulation, self).__init__(*args, **kwargs)
+        self.reachable_vertex = {}
+        self.tree_outdegree = {}        # Number of edges coming out of a node
+
+    def initialize_search(self):
+        super(DfsArticulation, self).initialize_search()
+        self.reachable_vertex = {}
+        self.tree_outdegree = {}
+
+    def classify_edge(self, x, y):
+        if not self.discovered[y]:
+            return self.TREE_EDGE
+        elif self.parents[x] != y:
+            return self.BACK_EDGE
+        else:
+            return self.PARENT_EDGE
+
+    def process_edge(self, u, v):
+        edge_class = self.classify_edge(u, v)
+        if edge_class == self.TREE_EDGE:
+            # print("{}-{}: TREE".format(u, v))
+            self.tree_outdegree[u] += 1
+        elif edge_class == self.BACK_EDGE:
+            # print("{}-{}: BACK".format(u, v))
+            if self.entry[v] < self.entry[self.reachable_vertex[u]]:
+                self.reachable_vertex[u] = v
+
+    def process_vertex_early(self, v):
+        self.reachable_vertex[v] = v
+        self.tree_outdegree[v] = 0
+
+
+
 if __name__ == '__main__':
     g = {
         1: [2, 3, 4],
@@ -102,7 +141,7 @@ if __name__ == '__main__':
     }
 
     graph = Graph(g, 10, False)
-    dfs = DfsCycle(graph)
+    dfs = DfsArticulation(graph)
     # dfs.dfs(1, True)
     # print(dfs.parents)
     # print(dfs.entry)
