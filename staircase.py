@@ -1,3 +1,5 @@
+
+
 def staircase(height: int,
               step_sizes: list,
               cache: dict = None) -> int:
@@ -42,5 +44,4 @@ def staircase(height: int,
 
 if __name__ == '__main__':
     param = [10, [1, 2]]
-    # print(staircase(*param))
     print(staircase(*param))

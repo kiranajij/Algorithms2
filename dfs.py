@@ -52,15 +52,7 @@ class Dfs:
         pass
 
     def process_edge(self, u, v):
-        if not self.discovered[v]:
-            pass
-            # visiting for the first time
-
-        elif self.parents[u] != v:
-            # found a back edge
-            print("{}-{}".format(u, v), end="")
-            path = self.find_path(v, u)
-            print(path)
+        pass
 
     def find_path(self, start, end) -> list:
         # self.dfs(start)
@@ -73,6 +65,23 @@ class Dfs:
             path.append(c_v)
         path.reverse()
         return path
+
+    def process_vertex_late(self, v):
+        pass
+
+
+class DfsCycle(Dfs):
+    def process_edge(self, u, v):
+        if not self.discovered[v]:
+            # Visiting first time
+            pass
+        elif self.parents[u] != v:
+            # Found Cycle
+            path = self.find_path(v, u)
+            print(path)
+
+    def process_vertex_early(self, start):
+        pass
 
     def process_vertex_late(self, v):
         pass
@@ -93,7 +102,7 @@ if __name__ == '__main__':
     }
 
     graph = Graph(g, 10, False)
-    dfs = Dfs(graph)
+    dfs = DfsCycle(graph)
     # dfs.dfs(1, True)
     # print(dfs.parents)
     # print(dfs.entry)
