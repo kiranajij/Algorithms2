@@ -2,6 +2,10 @@ from bfs import Graph
 
 
 class Dfs:
+    PARENT_EDGE = 2
+    BACK_EDGE = 1
+    TREE_EDGE = 0
+
     def __init__(self, graph: Graph):
         self.processed = {}
         self.graph = graph
@@ -69,6 +73,14 @@ class Dfs:
     def process_vertex_late(self, v):
         pass
 
+    def classify_edge(self, x, y):
+        if not self.discovered[y]:
+            return self.TREE_EDGE
+        elif self.parents[x] != y:
+            return self.BACK_EDGE
+        else:
+            return self.PARENT_EDGE
+
 
 class DfsCycle(Dfs):
     def process_edge(self, u, v):
@@ -88,27 +100,16 @@ class DfsCycle(Dfs):
 
 
 class DfsArticulation(Dfs):
-    TREE_EDGE = 0
-    BACK_EDGE = 1
-    PARENT_EDGE = 2
 
     def __init__(self, *args, **kwargs):
         super(DfsArticulation, self).__init__(*args, **kwargs)
         self.reachable_vertex = {}
-        self.tree_outdegree = {}        # Number of edges coming out of a node
+        self.tree_outdegree = {}  # Number of edges coming out of a node
 
     def initialize_search(self):
         super(DfsArticulation, self).initialize_search()
         self.reachable_vertex = {}
         self.tree_outdegree = {}
-
-    def classify_edge(self, x, y):
-        if not self.discovered[y]:
-            return self.TREE_EDGE
-        elif self.parents[x] != y:
-            return self.BACK_EDGE
-        else:
-            return self.PARENT_EDGE
 
     def process_edge(self, u, v):
         edge_class = self.classify_edge(u, v)
@@ -124,6 +125,47 @@ class DfsArticulation(Dfs):
         self.reachable_vertex[v] = v
         self.tree_outdegree[v] = 0
 
+    def process_vertex_late(self, v):
+        if self.parents[v] is None:
+            # Root of our tree
+            if self.tree_outdegree[v] > 1:
+                # has more than two children
+                print("root cut node: ", v)
+            return
+        is_root = self.parents[self.parents[v]] is None
+        if self.reachable_vertex[v] == self.parents[v] and not is_root:
+            print("Parent cut Node", self.parents[v])
+
+        if self.reachable_vertex[v] == v:
+            print("bridge articulation node(p): ", self.parents[v])
+
+            if self.tree_outdegree[v] > 0:
+                print("bridge articulation node(v): ", v)
+
+        time_v = self.entry[self.reachable_vertex[v]]
+        time_p = self.entry[self.reachable_vertex[self.parents[v]]]
+
+        if time_v < time_p:
+            self.reachable_vertex[self.parents[v]] = self.reachable_vertex[v]
+
+
+class DfsDirected(Dfs):
+    FORWARD_EDGE = 3
+    CROSS_EDGE = 4
+
+    def classify_edge(self, x, y):
+        if not self.parents[y] == x:
+            return self.TREE_EDGE
+        elif not self.processed[y] and self.discovered[y]:
+            return self.BACK_EDGE
+        if self.processed[y] and self.entry[y] > self.entry[x]:
+            return self.FORWARD_EDGE
+        if self.processed[y] and self.entry[y] < self.entry[x]:
+            return self.CROSS_EDGE
+        print("Warning: unclassified edge ({}, {})".format(x, y))
+
+    def process_edge(self, u, v):
+        print(self.classify_edge(u, v))
 
 
 if __name__ == '__main__':
@@ -140,8 +182,29 @@ if __name__ == '__main__':
         10: [8]
     }
 
-    graph = Graph(g, 10, False)
-    dfs = DfsArticulation(graph)
+    g2 = {
+        1: [2, 3, 4],
+        2: [1, 5, 6],
+        3: [1, 5],
+        4: [1],
+        5: [2, 3, 7],
+        6: [2],
+        7: [5],
+    }
+
+    gDirected = {
+        1: [2, 3],
+        2: [1, 6],
+        3: [1, 5, 7],
+        4: [1, 6],
+        5: [2, 3],
+        6: [4],
+        7: [3, 5],
+    }
+    # TODO: create better graphs to test algorithm and possibly another file
+    # containing graphs only
+    graph = Graph(gDirected, 7, True)
+    dfs = DfsDirected(graph)
     # dfs.dfs(1, True)
     # print(dfs.parents)
     # print(dfs.entry)
