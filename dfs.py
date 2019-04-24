@@ -1,5 +1,4 @@
 from bfs import Graph
-from graphs import *
 
 
 class Dfs:
@@ -19,7 +18,7 @@ class Dfs:
         self.finished = False
 
     def initialize_search(self):
-        for i in range(1, self.n_vertices + 1):
+        for i in self.graph.keys():
             self.parents[i] = None
             self.discovered[i] = False
             self.processed[i] = False

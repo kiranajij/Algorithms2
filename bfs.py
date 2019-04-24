@@ -1,6 +1,6 @@
 class Graph:
     def __init__(self, relation: dict,
-                 n_vertices: int,
+                 n_vertices: int = None,
                  directed: bool = False):
         self.directed = directed
         self.n_vertices = n_vertices
