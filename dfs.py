@@ -178,7 +178,7 @@ class TopoSort(DfsDirected):
 
     def process_edge(self, u, v):
         cls = self.classify_edge(u, v)
-        print("class({}, {}) = {}".format(u, v, cls))
+        # print("class({}, {}) = {}".format(u, v, cls))
         if cls == self.BACK_EDGE:
             print("Warning: Back edge ({}, {}), not a DAG".format(u, v))
 
