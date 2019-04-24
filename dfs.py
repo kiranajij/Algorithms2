@@ -1,4 +1,5 @@
 from bfs import Graph
+from graphs import *
 
 
 class Dfs:
@@ -154,9 +155,9 @@ class DfsDirected(Dfs):
     CROSS_EDGE = 4
 
     def classify_edge(self, x, y):
-        if not self.parents[y] == x:
+        if self.parents[y] == x:
             return self.TREE_EDGE
-        elif not self.processed[y] and self.discovered[y]:
+        if (not self.processed[y]) and self.discovered[y]:
             return self.BACK_EDGE
         if self.processed[y] and self.entry[y] > self.entry[x]:
             return self.FORWARD_EDGE
@@ -165,48 +166,33 @@ class DfsDirected(Dfs):
         print("Warning: unclassified edge ({}, {})".format(x, y))
 
     def process_edge(self, u, v):
-        print(self.classify_edge(u, v))
+        pass
 
 
-if __name__ == '__main__':
-    g = {
-        1: [2, 3, 4],
-        2: [1, 5, 6],
-        3: [1, 5, 7],
-        4: [1, 6],
-        5: [2, 3, 7],
-        6: [2, 4],
-        7: [3, 5],
-        8: [9, 10],
-        9: [8],
-        10: [8]
-    }
+class TopoSort(DfsDirected):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.toposort = []
 
-    g2 = {
-        1: [2, 3, 4],
-        2: [1, 5, 6],
-        3: [1, 5],
-        4: [1],
-        5: [2, 3, 7],
-        6: [2],
-        7: [5],
-    }
+    def process_vertex_late(self, v):
+        self.toposort.append(v)
 
-    gDirected = {
-        1: [2, 3],
-        2: [1, 6],
-        3: [1, 5, 7],
-        4: [1, 6],
-        5: [2, 3],
-        6: [4],
-        7: [3, 5],
-    }
-    # TODO: create better graphs to test algorithm and possibly another file
-    # containing graphs only
-    graph = Graph(gDirected, 7, True)
-    dfs = DfsDirected(graph)
-    # dfs.dfs(1, True)
-    # print(dfs.parents)
-    # print(dfs.entry)
-    # print(dfs.exit)
-    dfs.dfs(1, True)
+    def process_edge(self, u, v):
+        cls = self.classify_edge(u, v)
+        print("class({}, {}) = {}".format(u, v, cls))
+        if cls == self.BACK_EDGE:
+            print("Warning: Back edge ({}, {}), not a DAG".format(u, v))
+
+    def initialize_search(self):
+        super().initialize_search()
+        self.toposort = []
+
+    def topo_sort(self):
+        self.initialize_search()
+        for key in self.graph.keys():
+            if not self.discovered[key]:
+                self.dfs(key)
+
+        self.toposort.reverse()
+        return self.toposort
+

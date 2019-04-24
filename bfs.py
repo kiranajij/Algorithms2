@@ -9,6 +9,9 @@ class Graph:
     def get_neighbours(self, v):
         return self.relation[v]
 
+    def keys(self):
+        return self.relation.keys()
+
 
 class Bfs:
     def __init__(self, graph: Graph):
