@@ -45,6 +45,12 @@ class WeightedGraph:
         min_pair = min(tmp, key=lambda x: x[1])     # getting the minimum
         return min_pair
 
+    def get_vertices(self):
+        return self.graph.keys()
+
+    def get_edges(self, v):
+        return self.graph[v]
+
     def __str__(self) -> str:
         return self.graph.__str__()
 
