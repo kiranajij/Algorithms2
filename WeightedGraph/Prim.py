@@ -1,6 +1,7 @@
 from WeightedGraph import WeightedGraph
 import sys
 
+
 class Prim:
     """
     This is the implementation of Prim's algorithm of finding 

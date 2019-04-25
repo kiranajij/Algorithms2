@@ -2,6 +2,7 @@ class WeightedGraph:
     """
     This is a data structure to hold a graph.
     """
+
     def __init__(self, graph: dict):
         """
         :param graph: graph is of type dict. The graph must be in format
@@ -40,9 +41,9 @@ class WeightedGraph:
         :return: tuple
         """
         tmp: list = self.graph[v]
-        if not tmp:         # if
+        if not tmp:  # if
             return None
-        min_pair = min(tmp, key=lambda x: x[1])     # getting the minimum
+        min_pair = min(tmp, key=lambda x: x[1])  # getting the minimum
         return min_pair
 
     def get_vertices(self):
@@ -51,9 +52,36 @@ class WeightedGraph:
     def get_edges(self, v):
         return self.graph[v]
 
+    def make_edge_list(self):
+        edges = []
+        for k in self.get_vertices():
+            for v, w in self.get_edges(k):
+                if v < k: continue
+                edge = Edge(k, v, w)
+                edges.append(edge)
+        return edges
+
+    def get_length(self):
+        return len(self.get_vertices())
+
     def __str__(self) -> str:
         return self.graph.__str__()
 
     def __repr__(self) -> str:
         return "WeightedGraph()"
 
+
+class Edge:
+    def __init__(self, x: object, y: object, weight: float):
+        self.x = x
+        self.y = y
+        self.weight = weight
+
+    def __eq__(self, other):
+        if self.x == other.y:
+            if self.y == other.x and self.weight == other.weight:
+                return True
+        if self.x == other.x:
+            if self.y == other.y and self.weight == other.weight: return True
+
+        return False
