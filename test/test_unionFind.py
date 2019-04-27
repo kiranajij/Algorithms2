@@ -1,7 +1,6 @@
 import unittest
 from unittest import TestCase
 
-
 from WeightedGraph.UnionFind import UnionFind
 
 
