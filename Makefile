@@ -3,3 +3,6 @@ all: heapsort.c heap_main.c
 
 clean:
 	rm main
+
+test_cpp: nothing.cpp
+	gcc nothing.cpp -o nothing.out

@@ -18,9 +18,12 @@ def staircase(height: int,
         Q. How many ways there are to reach to the top of a staircase of height
             5 with allowed step sizes {1, 2}
         Ans.
-            >>> staircase(5, [1, 2])
-            >>> 8
-        thus number of ways is 8.
+    >>> staircase(5, [1, 2])
+    8
+    >>> staircase(10, [1, 2, 3, 4])
+    401
+
+    thus number of ways is 8.
 
 
     """

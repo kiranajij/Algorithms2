@@ -61,6 +61,9 @@ class AbstractBacktrackDFS(metaclass=ABCMeta):
                 if self.finished:
                     return
 
+    def run(self):
+        self._run(0)
+
 
 class Subsets(AbstractBacktrackDFS):
 
@@ -87,6 +90,38 @@ class Subsets(AbstractBacktrackDFS):
     def generate_candidates(self, k, candidates, *args, **kwargs):
         candidates.append(True)
         candidates.append(False)
+
+    def make_move(self, k, *args, **kwargs):
+        pass
+
+    def unmake_move(self, k, *args, **kwargs):
+        pass
+
+
+class Permutations(AbstractBacktrackDFS):
+    def __init__(self, n_elements, elements: list=None):
+        super().__init__()
+        self.n_elements = n_elements
+        if elements is None:
+            self.elements = [i+1 for i in range(n_elements)]
+        else:
+            self.n_elements = elements
+        self.state_vector = [None for i in range(n_elements+1)]
+
+    def is_solution(self, k, *args, **kwargs):
+        return k == self.n_elements
+
+    def process_solution(self, k, *args, **kwargs):
+        print(self.state_vector[1::])
+
+    def generate_candidates(self, k, candidates, *args, **kwargs):
+        current_sv = self.state_vector[1:k]
+        for elem in self.elements:
+            if elem not in current_sv:
+                candidates.append(elem)
+        # print(candidates)
+        # print(self.state_vector)
+        return candidates
 
     def make_move(self, k, *args, **kwargs):
         pass
