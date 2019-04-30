@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
 int is_solution(int a[], int k, int n, int sum){
     return (n == k);
 }
@@ -16,7 +17,16 @@ void process_solution(int a[], int k, int n, int sum){
 int generate_candidates(int a[], int k, int n, int sum, int cand[]){
     int n_cand = 0;
     for (int i=1; i<=6; i++){
-        if (i<=sum){
+        /*
+        * uncommenting first one will give you all the
+        * possible results.
+        * the second one print one combination only once.
+        * so if "1 1 2" gets printed, "2 1 1" or "1 2 1" will
+        * not get printed
+        */
+        //if(i<=sum)
+        if (i<=sum && i>a[k-1])
+        {
             cand[n_cand] = i;
             n_cand++;
         }
