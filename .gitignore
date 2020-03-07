@@ -2,5 +2,14 @@
 r*.txt
 *.out
 *.pyc
+*.tex
+.vscode/
+.idea/
 
-#!*.*
+#!*.*.idea
+det
+list
+main
+dice
+binary_search
+quicksort

@@ -14,6 +14,7 @@ advance one step at a time and keep doing it until desired result is acquired.
                 BacktrackDFS(A, k)
 
 """
+import sys
 from abc import abstractmethod, ABCMeta
 
 
@@ -81,7 +82,7 @@ class Subsets(AbstractBacktrackDFS):
         return k == self.n
 
     def process_solution(self, k, *args, **kwargs):
-        elems = [self.elements[i] for i in range(self.n) if self.state_vector[i+1]]
+        elems = [self.elements[i] for i in range(self.n) if self.state_vector[i + 1]]
         # print(elems)
         if sum(elems) == 5:
             print(elems)
@@ -99,14 +100,14 @@ class Subsets(AbstractBacktrackDFS):
 
 
 class Permutations(AbstractBacktrackDFS):
-    def __init__(self, n_elements, elements: list=None):
+    def __init__(self, n_elements, elements: list = None):
         super().__init__()
         self.n_elements = n_elements
         if elements is None:
-            self.elements = [i+1 for i in range(n_elements)]
+            self.elements = [i + 1 for i in range(n_elements)]
         else:
             self.n_elements = elements
-        self.state_vector = [None for i in range(n_elements+1)]
+        self.state_vector = [None for i in range(n_elements + 1)]
 
     def is_solution(self, k, *args, **kwargs):
         return k == self.n_elements
@@ -128,3 +129,55 @@ class Permutations(AbstractBacktrackDFS):
 
     def unmake_move(self, k, *args, **kwargs):
         pass
+
+
+class AssignmentProblem(AbstractBacktrackDFS):
+    def is_solution(self, k, *args, **kwargs):
+        return k == self.n
+
+    def process_solution(self, k, *args, **kwargs):
+        cost = 0
+
+        for i in range(n):
+            cost += self.costMatrix[self.state_vector[i+1]][i]
+        # print(self.state_vector[1:], cost)
+        if cost < self.min_cost:
+            self.min_cost = cost
+            self.min_sv = self.state_vector.copy()
+
+    def generate_candidates(self, k, candidates, *args, **kwargs):
+        # candidate = []
+        current_cv = self.state_vector[1:k]
+        for i in range(n):
+            if i not in current_cv:
+                candidates.append(i)
+        return candidates
+
+    def make_move(self, k, *args, **kwargs):
+        pass
+
+    def unmake_move(self, k, *args, **kwargs):
+        pass
+
+    def __init__(self, n, costMatrix, *args, **kwargs):
+        super().__init__()
+        self.costMatrix = costMatrix
+        self.n = n
+        self.min_cost = sys.maxsize
+        self.state_vector = [None for i in range(n+1)]
+        self.min_sv = None
+
+
+if __name__ == '__main__':
+    n = int(input())  # order of the payoff matrix
+    costs = []
+
+    for i in range(n):
+        line = str(input())  # rows of the payoff matrix
+        line_split = list(line.split(" "))
+        costs.append(list(map(lambda x: float(x), line_split)))
+
+    assp = AssignmentProblem(n, costs)
+    assp.run()
+    print(assp.min_sv[1:])
+    print(assp.min_cost)
